@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Agenda · Aesthetic Men</title>
+<link rel="icon" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--soft:#F4F3F0;--line:#E6E3DD;--ink:#1D1C1A;--mute:#77736C;--now:#E5484D;
+  --c-corte:#2F6FEB;--c-corte-barba:#7E57E8;--c-barba:#0E9F8E;--c-nino:#E38B1C;--c-cejas:#D9468C;--c-mechas:#5B5B5B;--c-color:#C2410C;--c-rizos:#4D7C0F;--c-block:#9C978F}
+*{box-sizing:border-box}
+body{margin:0;background:var(--soft);color:var(--ink);font-family:"Inter Tight",system-ui,sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+.app{display:flex;flex-direction:column;height:100vh}
+.bar{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar .logo{font-family:"Syncopate",sans-serif;font-size:.72rem;letter-spacing:.2em;background:#0A0A0A;color:#fff;padding:9px 12px;border-radius:8px}
+.bar h1{font-size:1.1rem;font-weight:600;margin:0}
+.bar .nav{display:flex;gap:4px;margin-left:8px}
+.bar .nav button{width:34px;height:34px;border-radius:50%;border:0;background:none;font-size:1rem}
+.bar .nav button:hover{background:var(--soft)}
+.bar .today{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 14px;font-weight:500}
+.sync{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--mute)}
+.sync i{width:8px;height:8px;border-radius:50%;background:#2DA44E;box-shadow:0 0 0 3px rgba(45,164,78,.18)}
+.stats{display:flex;gap:10px;padding:12px 20px;background:var(--bg);border-bottom:1px solid var(--line);overflow-x:auto}
+.stat{flex:none;border:1px solid var(--line);border-radius:10px;padding:8px 14px;min-width:120px}
+.stat b{display:block;font-size:1.3rem;font-variant-numeric:tabular-nums}
+.stat span{color:var(--mute);font-size:.78rem}
+.stat.flash{animation:flash 1.4s}
+@keyframes flash{20%{background:#E9F7EE;border-color:#2DA44E}}
+.cal{flex:1;overflow:auto;background:var(--bg);position:relative}
+.grid{display:grid;grid-template-columns:56px repeat(var(--days),minmax(120px,1fr));min-width:680px}
+.dh{position:sticky;top:0;z-index:3;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 8px 8px;text-align:center}
+.dh small{display:block;font-size:.7rem;letter-spacing:.08em;color:var(--mute);text-transform:uppercase}
+.dh b{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;font-size:1.25rem;font-weight:500;margin-top:2px}
+.dh.is-today small{color:var(--c-corte)}
+.dh.is-today b{background:var(--c-corte);color:#fff}
+.corner{position:sticky;top:0;z-index:4;background:var(--bg);border-bottom:1px solid var(--line)}
+.times{position:relative}
+.times span{position:absolute;right:8px;transform:translateY(-50%);font-size:.7rem;color:var(--mute)}
+.col{position:relative;border-left:1px solid var(--line);background-image:linear-gradient(var(--line) 1px,transparent 1px);background-size:100% var(--hh)}
+.col.closed{background-color:#FAF9F7}
+.ev{position:absolute;left:3px;right:5px;border-radius:6px;padding:4px 7px;color:#fff;font-size:.74rem;line-height:1.25;overflow:hidden;box-shadow:0 0 0 1.5px var(--bg)}
+.ev b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev span{opacity:.9;white-space:nowrap}
+.ev.block{background:repeating-linear-gradient(135deg,#ECEAE6 0 6px,#E2DFD9 6px 12px)!important;color:var(--mute)}
+.ev.past{opacity:.55}
+.ev.short span{display:none}
+.ev.short{padding:2px 7px;font-size:.68rem}
+.ev.fresh{animation:drop .7s cubic-bezier(.2,1.4,.4,1),glow 2.4s .6s 2}
+@keyframes drop{from{transform:translateY(-14px) scale(.9);opacity:0}}
+@keyframes glow{50%{box-shadow:0 0 0 1.5px var(--bg),0 0 0 6px rgba(47,111,235,.35)}}
+.ev .new{display:inline-block;background:#fff;color:var(--ink);font-size:.6rem;font-weight:700;letter-spacing:.06em;padding:1px 5px;border-radius:4px;margin-bottom:2px}
+.nowline{position:absolute;left:-1px;right:0;height:2px;background:var(--now);z-index:2}
+.nowline::before{content:"";position:absolute;left:-5px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--now)}
+/* notificación */
+.notif{position:fixed;top:16px;right:16px;z-index:20;width:330px;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.18),0 0 0 1px rgba(0,0,0,.05);padding:12px 14px;display:flex;gap:12px;transform:translateY(-130%);transition:transform .5s cubic-bezier(.2,1.2,.4,1)}
+.notif.show{transform:none}
+.notif .ic{flex:none;width:38px;height:38px;border-radius:10px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-weight:700;color:var(--c-corte);font-size:.82rem}
+.notif small{color:var(--mute);font-size:.72rem}
+.notif b{display:block;font-size:.86rem}
+.notif p{margin:2px 0 0;font-size:.82rem;color:#3F3D39}
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:10px 20px;background:var(--bg);border-top:1px solid var(--line);font-size:.76rem;color:var(--mute)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px}
+.demo{font-size:.72rem;color:var(--mute);margin-left:auto}
+.demo button{border:0;background:none;text-decoration:underline;color:var(--mute);font-size:.72rem;padding:0}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="bar">
+    <span class="logo">AM</span>
+    <h1 id="title">Agenda</h1>
+    <div class="nav"><button type="button" id="prev" aria-label="Semana anterior">‹</button><button type="button" id="nextW" aria-label="Semana siguiente">›</button></div>
+    <button class="today" type="button" id="todayBtn">Hoy</button>
+    <div class="sync"><i></i><span>Google Calendar · sincronizado <b id="ago">ahora</b></span></div>
+  </div>
+  <div class="stats">
+    <div class="stat" id="stToday"><b>0</b><span>citas hoy</span></div>
+    <div class="stat" id="stWeek"><b>0</b><span>citas esta semana</span></div>
+    <div class="stat" id="stCash"><b>0 €</b><span>previsto esta semana</span></div>
+    <div class="stat" id="stOnline"><b>0</b><span>reservadas online hoy</span></div>
+  </div>
+  <div class="cal" id="cal"></div>
+  <div class="legend" id="legend"></div>
+</div>
+<div class="notif" id="notif"><div class="ic">31</div><div><small>Google Calendar · ahora</small><b id="nTitle"></b><p id="nBody"></p></div></div>
+
+<script src="agenda.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const START = 10, END = 23, HH = 52;          // horas visibles y alto por hora en px
+const DOW = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+const MON = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+let offset = 0, online = 0, lastSync = Date.now();
+const mins = s => { const [h, m] = s.slice(11, 16).split(':').map(Number); return h * 60 + m; };
+
+function monday(o) { const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + o * 7); return d; }
+
+function render(freshId) {
+  const m = monday(offset), days = Array.from({ length: 6 }, (_, i) => AM.addDays(m, i));
+  const today = AM.ymd(new Date()), all = AM.events();
+  $('#title').textContent = `${MON[m.getMonth()][0].toUpperCase() + MON[m.getMonth()].slice(1)} ${m.getFullYear()}`;
+  let html = `<div class="grid" style="--days:${days.length};--hh:${HH}px"><div class="corner"></div>`;
+  html += days.map(d => `<div class="dh ${AM.ymd(d) === today ? 'is-today' : ''}"><small>${DOW[d.getDay()]}</small><b>${d.getDate()}</b></div>`).join('');
+  html += `<div class="times" style="height:${(END - START) * HH}px">${Array.from({ length: END - START }, (_, i) => i ? `<span style="top:${i * HH}px">${START + i}:00</span>` : '').join('')}</div>`;
+  for (const d of days) {
+    const k = AM.ymd(d), closed = !AM.CONFIG.HOURS[d.getDay()];
+    html += `<div class="col ${closed ? 'closed' : ''}">`;
+    for (const e of all.filter(e => e.start.startsWith(k))) {
+      const top = (mins(e.start) - START * 60) / 60 * HH, h = (mins(e.end) - mins(e.start)) / 60 * HH;
+      const past = new Date(e.end) < new Date();
+      const color = e.kind === 'block' ? '' : `background:var(--c-${e.service})`;
+      html += `<div class="ev ${h < 34 ? "short" : ""} ${e.kind === 'block' ? 'block' : ''} ${past ? 'past' : ''} ${e.id === freshId ? 'fresh' : ''}" style="top:${top}px;height:${h - 2}px;${color}" ${e.id === freshId ? 'id="fresh"' : ''}>
+        ${e.fresh && !past ? '<span class="new">ONLINE</span>' : ''}<b>${e.kind === 'block' ? e.title : e.title + ' · ' + e.name}</b><span>${e.start.slice(11)}–${e.end.slice(11)}</span></div>`;
+    }
+    if (k === today) { const n = new Date(), t = n.getHours() * 60 + n.getMinutes(); if (t > START * 60 && t < END * 60) html += `<div class="nowline" style="top:${(t - START * 60) / 60 * HH}px"></div>`; }
+    html += '</div>';
+  }
+  $('#cal').innerHTML = html + '</div>';
+
+  // cifras
+  const wk = all.filter(e => e.kind === 'cita' && e.start >= AM.ymd(m) && e.start < AM.ymd(AM.addDays(m, 7)));
+  $('#stToday b').textContent = all.filter(e => e.kind === 'cita' && e.start.startsWith(today)).length;
+  $('#stWeek b').textContent = wk.length;
+  $('#stCash b').textContent = wk.reduce((a, e) => a + AM.svc(e.service).price, 0).toLocaleString('es-ES') + ' €';
+  $('#stOnline b').textContent = all.filter(e => e.fresh).length;
+}
+
+function scrollToNow() {
+  const n = new Date(), t = Math.max(START * 60, Math.min(n.getHours() * 60 - 90, (END - 6) * 60));
+  $('#cal').scrollTop = (t - START * 60) / 60 * HH;
+}
+
+function notify(ev) {
+  const d = new Date(ev.start);
+  $('#nTitle').textContent = `Nueva cita · ${ev.title}`;
+  $('#nBody').textContent = `${ev.name} · ${DOW[d.getDay()]} ${d.getDate()} a las ${ev.start.slice(11)} · reservada desde la web`;
+  $('#notif').classList.add('show');
+  clearTimeout(notify.t); notify.t = setTimeout(() => $('#notif').classList.remove('show'), 5200);
+}
+
+AM.onChange(msg => {
+  lastSync = Date.now();
+  if (msg.type === 'new') {
+    const ev = msg.ev, m = monday(0);
+    offset = Math.floor((new Date(ev.start.slice(0, 10) + 'T12:00') - m) / (7 * 864e5));
+    render(ev.id);
+    const el = $('#fresh');
+    el && $('#cal').scrollTo({ top: el.offsetTop - 160, behavior: 'smooth' });
+    notify(ev);
+    ['#stToday', '#stWeek', '#stCash', '#stOnline'].forEach(s => { $(s).classList.remove('flash'); void $(s).offsetWidth; $(s).classList.add('flash'); });
+  } else render();
+});
+setInterval(() => { const s = Math.round((Date.now() - lastSync) / 1000); $('#ago').textContent = s < 5 ? 'ahora' : `hace ${s} s`; if (s >= 30) lastSync = Date.now(); }, 1000);
+setInterval(() => render(), 60000);
+
+$('#prev').onclick = () => { offset--; render(); };
+$('#nextW').onclick = () => { offset++; render(); };
+$('#todayBtn').onclick = () => { offset = 0; render(); scrollToNow(); };
+
+$('#legend').innerHTML = AM.SERVICES.map(s => `<span><i style="background:var(--c-${s.id})"></i>${s.name}</span>`).join('') + '<span><i style="background:#E2DFD9"></i>Bloqueado</span><span class="demo">Demostración con citas inventadas · <button type="button" id="reset">reiniciar</button></span>';
+$('#reset').onclick = () => { AM.reset(); render(); };
+
+render(); scrollToNow();
+</script>
+</body>
+</html>
